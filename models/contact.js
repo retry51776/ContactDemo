@@ -18,10 +18,11 @@ const contactSchema = Yup.object({
 		https://stackoverflow.com/questions/57863852/yup-validation-on-multiple-values
 		*/
   async function (contact) {
+    console.log('test', contact)
     if (!(contact.phone || contact.email || contact.address)) {
       return this.createError({
         path: "phone | email | address",
-        message: "One field must be set",
+        message: "One of [phone, email, address] required",
       });
     }
     for (const field of ["phone", "email"]) {

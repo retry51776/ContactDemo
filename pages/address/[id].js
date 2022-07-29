@@ -1,5 +1,7 @@
 import { useRouter } from "next/router";
 import { useQuery } from "@tanstack/react-query";
+import { Badge } from '@chakra-ui/react'
+
 import ContactForm from "../../modules/ContactForm";
 import AddressNav from "../../modules/AddressNav";
 import { getContacts, editContact } from "../../data/contact";
@@ -40,7 +42,7 @@ export default function Address() {
   return (
     <div>
       <AddressNav />
-      <h1>Edit Contact #{id} Details</h1>
+      <Badge>Edit Contact: #{id}</Badge>
       <ContactForm contact={data[0]} onSubmit={onEditContact}/>
     </div>
   );

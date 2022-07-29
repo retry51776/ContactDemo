@@ -14,7 +14,7 @@ export default function Home() {
         </h1>
 
         <p className={styles.description}>
-          This Address Book Demo uses NextJS, ReactQuery & Formik;
+          This Address Book Demo uses NextJS, ReactQuery & Material UI V5;
         </p>
       </main>
 

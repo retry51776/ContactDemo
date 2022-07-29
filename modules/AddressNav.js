@@ -1,15 +1,43 @@
 import Link from "next/link";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+} from '@chakra-ui/react'
+import { useRouter } from 'next/router'
 
+const paths = [
+  {
+    path: '/',
+    label: 'Home'
+  },
+  {
+    path: '/address',
+    label: 'Contact Table'
+  },
+  {
+    path: '/address/create',
+    label: 'Create Contact'
+  },
+];
 function AddressNav() {
+  const router = useRouter()
+  console.log('router', router)
   return (
     <>
-      <Link href="/address">
-        <h1>Contact Table</h1>
-      </Link>
-      <Link href="/address/create" className="h1">
-        <h1>Create New Contact</h1>
-      </Link>
-      <hr />
+      <Breadcrumb spacing='8px'>
+        {
+          paths.map(p => (
+            <BreadcrumbItem
+              isCurrentPage={router.route === p.path}
+            >
+              <BreadcrumbLink href={p.path}>
+                {p.label}
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+          ))
+        }
+      </Breadcrumb>
     </>
   );
 }

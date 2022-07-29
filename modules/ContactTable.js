@@ -1,4 +1,4 @@
-import { react, useState } from "react";
+import { useState, useMemo } from "react";
 import {
   useGroupBy,
   useSortBy,
@@ -6,53 +6,19 @@ import {
   useGlobalFilter,
   useAsyncDebounce,
 } from "react-table";
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+  Button,
+} from '@chakra-ui/react'
 import { deleteContact } from "../data/contact";
 
-// I know this is bad user experience
-// But I like columns def be static & able to define outside table
-// Otherwise I need to do useMemo hook; Then I am able to use refresh of useQuery
-// This app getting too big anyway
-const columns = [
-  {
-    Header: "A-Z",
-    accessor: (row) => row?.last_name?.charAt(0),
-    id: "initial",
-  },
-  {
-    Header: "Last Name",
-    accessor: "last_name",
-  },
-  {
-    Header: "First Name",
-    accessor: "first_name",
-  },
-  {
-    Header: "Email",
-    accessor: "email",
-  },
-  {
-    Header: "Phone",
-    accessor: "phone",
-  },
-  {
-    Header: "Address",
-    accessor: "address",
-  },
-  {
-    Header: "Edit",
-    id: "edit",
-    accessor: "id",
-    Cell: ({ value }) => <a href={`/address/${value}`}>Edit</a>,
-  },
-  {
-    Header: "Delete",
-    id: "delete",
-    accessor: "id",
-    Cell: ({ value }) => (
-      <button onClick={() => deleteContact(value)}>Delete</button>
-    ),
-  },
-];
 
 const GlobalFilter = ({ globalFilter, setGlobalFilter }) => {
   const [filter, setFilter] = useState(globalFilter);
@@ -74,17 +40,17 @@ const GlobalFilter = ({ globalFilter, setGlobalFilter }) => {
 };
 const Header = ({ headerGroups }) =>
   headerGroups.map((headerGroup) => (
-    <tr {...headerGroup.getHeaderGroupProps()}>
+    <Tr {...headerGroup.getHeaderGroupProps()}>
       {headerGroup.headers.map((column) => (
-        <th {...column.getHeaderProps(column.getSortByToggleProps())}>
+        <Th {...column.getHeaderProps(column.getSortByToggleProps())}>
           {column.render("Header")}
           <span>
             {column.isSorted ? (column.isSortedDesc ? " 🔽" : " 🔼") : ""}
           </span>
           <div>{column.canFilter ? column.render("Filter") : null}</div>
-        </th>
+        </Th>
       ))}
-    </tr>
+    </Tr>
   ));
 
 const Cell = ({ cell, row }) => {
@@ -112,15 +78,58 @@ const Rows = ({ rows, prepareRow }) =>
     return (
       <tr>
         {row.cells.map((cell) => (
-          <td {...cell.getCellProps()}>
+          <Td {...cell.getCellProps()}>
             <Cell cell={cell} row={row} />
-          </td>
+          </Td>
         ))}
       </tr>
     );
   });
 
 const ContactTable = ({ data }) => {
+
+  const columns = useMemo(()=> [
+    {
+      Header: "A-Z",
+      accessor: (row) => row?.last_name?.charAt(0),
+      id: "initial",
+    },
+    {
+      Header: "Last Name",
+      accessor: "last_name",
+    },
+    {
+      Header: "First Name",
+      accessor: "first_name",
+    },
+    {
+      Header: "Email",
+      accessor: "email",
+    },
+    {
+      Header: "Phone",
+      accessor: "phone",
+    },
+    {
+      Header: "Address",
+      accessor: "address",
+    },
+    {
+      Header: "Edit",
+      id: "edit",
+      accessor: "id",
+      Cell: ({ value }) => <a href={`/address/${value}`}>Edit</a>,
+    },
+    {
+      Header: "Delete",
+      id: "delete",
+      accessor: "id",
+      Cell: ({ value }) => (
+        <Button key={value} onClick={() => deleteContact(value)}>Delete</Button>
+      ),
+    },
+  ], []);
+
   const {
     getTableProps,
     headerGroups,
@@ -146,20 +155,23 @@ const ContactTable = ({ data }) => {
     useSortBy
   );
 
+
   return (
     <>
       <GlobalFilter
         globalFilter={globalFilter}
         setGlobalFilter={setGlobalFilter}
       />
-      <table {...getTableProps()}>
-        <thead>
-          <Header headerGroups={headerGroups} />
-        </thead>
-        <tbody {...getTableProps()}>
-          <Rows rows={rows} prepareRow={prepareRow} />
-        </tbody>
-      </table>
+      <TableContainer>
+        <Table {...getTableProps()}>
+          <Thead>
+            <Header headerGroups={headerGroups} />
+          </Thead>
+          <Tbody {...getTableProps()}>
+            <Rows rows={rows} prepareRow={prepareRow} />
+          </Tbody>
+        </Table>
+      </TableContainer>
     </>
   );
 };

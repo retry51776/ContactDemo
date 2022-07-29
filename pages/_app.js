@@ -3,17 +3,22 @@ import "regenerator-runtime/runtime";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { ChakraProvider } from '@chakra-ui/react'
+import { extendTheme } from '@chakra-ui/react'
 
-import { theme, ThemeProvider } from "@chakra-ui/core";
-
+const theme = extendTheme({
+  config: {
+    initialColorMode: 'dark',
+  },
+})
 const queryClient = new QueryClient();
 
 function AddressDemo({ Component, pageProps }) {
   return (
     <QueryClientProvider client={queryClient} contextSharing={true}>
-      <ThemeProvider them={theme}>
+      <ChakraProvider theme={theme}>
         <Component {...pageProps} />
-      </ThemeProvider>
+      </ChakraProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );
